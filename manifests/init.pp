@@ -39,11 +39,16 @@ class java(
     }
     else
     {
+      exec { 'which wget eyp-java':
+        command => 'which wget',
+        unless  => 'which wget',
+      }
+
       exec { "java ${version} download":
         command => "${java::params::jre_download_command[$version]} -O ${srcdir}/jre-${version}.tgz",
         creates => "${srcdir}/jre-${version}.tgz",
-        require => Package['wget'],
-        before => $before_tomcat,
+        require => Exec['which wget eyp-java'],
+        before  => $before_tomcat,
       }
 
       file { "${basedir}/jre-${version}":
@@ -88,10 +93,13 @@ class java(
       # java_sdk_1.8.0	auto	/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.111-1.b15.el7_2.x86_64
       # [root@ar-prod-por01 tomcat8180]#
 
+      #TODO: canviar el unless per:
+      # [root@ldapm src]# ls -la /etc/alternatives/java
+      # lrwxrwxrwx 1 root root 19 Nov  4 15:08 /etc/alternatives/java -> /opt/jre-7/bin/java
       exec { "set java alternatives ${basedir}/jre-${version}":
         command => "alternatives --set java ${basedir}/jre-${version}/bin/java",
         require => Exec["update alternatives ${basedir}/jre-${version}"],
-        unless  => "alternatives --list | grep -P \"java\\t\" | grep manual | grep ${basedir}/jre-${version}/bin/java",
+        unless  => "ls -la /etc/alternatives/java | grep ${basedir}/jre-${version}/bin/java",
       }
 
 
