@@ -1,5 +1,22 @@
 # CHANGELOG
 
+## 0.2.0
+
+* **INCOMPATIBLE CHANGE**: removed jre installation from main class
+* added **java::jre**
+
+## 0.1.20
+
+* added **java::jce::download_source**
+
+## 0.1.19
+
+*  bugfix JCE
+
+## 0.1.18
+
+* added jce unzip dependency to jce copy + lint
+
 ## 0.1.17
 
 * added wget and unzip checks using "unless which ..."
